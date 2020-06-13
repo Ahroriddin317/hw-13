@@ -1,6 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { setBase } from '../redux/reducers/products'
+import { setBase, sumSelection, sortPrice, sortName } from '../redux/reducers/products'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -9,32 +10,57 @@ const Header = () => {
 
   const list = useSelector((s) => s.products.list)
   const selection = useSelector((s) => s.products.selection)
-  const getPrice = (id) => list.find((it) => it.id === id).price
   const numberOfItems = Object.values(selection).reduce((acc, rec) => acc + rec, 0)
-  const sum = Object.entries(selection).reduce(
-    (acc, [id, qty]) => acc + getPrice(id) * qty * (rates[base] || 1),
-    0
-  )
+  const sum = sumSelection(selection, rates, base, list)
 
+  const changeSortProducts = (e) => {
+    e.preventDefault()
+    const { id } = e.target
+    if (id === 'sort-price') {
+      dispatch(sortPrice())
+    }
+    if (id === 'sort-name') {
+      dispatch(sortName())
+    }
+  }
   return (
-    <div>
-      {['CAD', 'USD', 'EUR'].map((it) => {
-        return (
-          <button
-            key={it}
-            type="button"
-            className={`mx-4 ${base === it ? 'underline' : ''}`}
-            onClick={() => {
-              dispatch(setBase(it))
-            }}
-          >
-            {it}
-          </button>
-        )
-      })}
-
-      <div>{sum !== 0 && sum}</div>
-      <div>{numberOfItems !== 0 && numberOfItems}</div>
+    <div className="flex">
+      <div className="flex-auto text-700 ml-20">
+        <Link className="mr-8" id="brand-name" to="/">
+          Home
+        </Link>
+        <Link to="/basket" className="mr-8" >basket</Link>
+        <Link to="/logs">logs</Link>
+      </div>
+      <div>
+        {['CAD', 'USD', 'EUR'].map((it) => {
+          return (
+            <button
+              key={it}
+              type="button"
+              className={`mx-4 ${base === it ? 'underline' : ''}`}
+              onClick={() => {
+                dispatch(setBase(it))
+              }}
+            >
+              {it}
+            </button>
+          )
+        })}
+      </div>
+      <div className="flex-auto text-700">
+        {['sort price', 'sort name'].map(sort => {
+          return (
+            <button key={sort} type="button" id={sort === 'sort price' ? 'sort-price' : 'sort-name'} className="mr-8" onClick={changeSortProducts}>
+              {sort}
+            </button>
+          )
+        })}
+      </div>
+      <div>
+        <p>{sum !== 0 && sum}</p>
+        <p>{numberOfItems !== 0 && numberOfItems}</p>
+      </div>
     </div>
   )
 }
