@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
-const { readFile, writeFile } = require('fs').promises
+const { readFile, writeFile, unlink } = require('fs').promises
 const data = require('./data')
 
 const Root = () => ''
@@ -69,6 +69,11 @@ server.post('/api/v1/logs', async(req, res) => {
     writeFile(`${__dirname}/logs.json`, JSON.stringify([{ ...body, date: +new Date() }]), { encoding: 'utf8' })
     res.json({ status: 'creat logs file' })
   }
+})
+
+server.delete('/api/v1/logs', (req, res) => {
+  unlink(`${__dirname}/logs.json`)
+  res.json({status: 'ok'})
 })
 
 server.use('/api/', (req, res) => {

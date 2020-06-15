@@ -12,6 +12,13 @@ const Header = () => {
   const selection = useSelector((s) => s.products.selection)
   const numberOfItems = Object.values(selection).reduce((acc, rec) => acc + rec, 0)
   const sum = sumSelection(selection, rates, base, list)
+  const { pathname } = window.location
+
+  const symbols = {
+    'USD': '$',
+    'EUR': 'E',
+    'CAD': 'C'
+  }
 
   const changeSortProducts = (e) => {
     e.preventDefault()
@@ -24,13 +31,15 @@ const Header = () => {
     }
   }
   return (
-    <div className="flex">
-      <div className="flex-auto text-700 ml-20">
-        <Link className="mr-8" id="brand-name" to="/">
-          Home
+    <div className="flex items-center justify-between flex-wrap bg-blue-500 p-6">
+      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+        <div className="text-lg lg:flex-grow">
+          <Link className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 focus:underline" id="brand-name" to="/">
+            Home
         </Link>
-        <Link to="/basket" className="mr-8" >basket</Link>
-        <Link to="/logs">logs</Link>
+          <Link to="/basket" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 focus:underline" >basket</Link>
+          <Link to="/logs" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white focus:underline">logs</Link>
+        </div>
       </div>
       <div>
         {['CAD', 'USD', 'EUR'].map((it) => {
@@ -38,7 +47,7 @@ const Header = () => {
             <button
               key={it}
               type="button"
-              className={`mx-4 ${base === it ? 'underline' : ''}`}
+              className={`mx-4 ${base === it ? 'underline' : ''} inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0`}
               onClick={() => {
                 dispatch(setBase(it))
               }}
@@ -48,18 +57,20 @@ const Header = () => {
           )
         })}
       </div>
-      <div className="flex-auto text-700">
-        {['sort price', 'sort name'].map(sort => {
-          return (
-            <button key={sort} type="button" id={sort === 'sort price' ? 'sort-price' : 'sort-name'} className="mr-8" onClick={changeSortProducts}>
-              {sort}
-            </button>
-          )
-        })}
+      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto ml-16">
+        <div className="text-lg lg:flex-grow">
+          {['sort price', 'sort name'].map(sort => {
+            return (
+              <button key={sort} type="button" id={sort === 'sort price' ? 'sort-price' : 'sort-name'} className=" block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4" onClick={changeSortProducts}>
+                {sort}
+              </button>
+            )
+          })}
+        </div>
       </div>
       <div>
-        <p>{sum !== 0 && sum}</p>
-        <p>{numberOfItems !== 0 && numberOfItems}</p>
+        <p className="block mt-4 lg:inline-block lg:mt-0 text-white mr-4" >{sum !== 0 && `total price: ${sum.toFixed(2)} ${symbols[base]}`}</p>
+        {pathname !== '/basket' && <p className="block mt-4 lg:inline-block lg:mt-0 text-white mr-4" >{numberOfItems !== 0 && `total amount: ${numberOfItems}`}</p>}
       </div>
     </div>
   )

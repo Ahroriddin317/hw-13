@@ -4,6 +4,7 @@ import { addSelection, removeSelection } from '../redux/reducers/products'
 
 const Card = ({ id, title, image, price, rates, base, selection }) => {
   const dispatch = useDispatch()
+  const { pathname } = window.location
   const symbols = {
     'USD': '$',
     'EUR': 'E',
@@ -11,36 +12,39 @@ const Card = ({ id, title, image, price, rates, base, selection }) => {
   }
   return (
     <div
-      className="border-2 flex flex-col border-solid border-black w-64 h-64 p-2 m-4"
+      className="card m-8 max-w-sm rounded overflow-hidden shadow-lg flex flex-col w-64"
     >
       <div className="flex justify-center">
-        <img className="h-32" src={image} alt={title} />
+        <img className="card__image h-32 object-cover w-full" src={image} alt={title} />
       </div>
-      <div>{title} </div>
-      <div>
-        {(price * (rates[base] || 1)).toFixed(2)} {symbols[base] || 'E'}{' '}
-        {selection[id] > 0 && <p>{(price * selection[id]).toFixed(2)}</p>}
+      <div className="card__title mb-2 mt-2" >{title} </div>
+      <div className="px-6">
+        <p className="card__price">
+          {(price * (rates[base] || 1)).toFixed(2)} {symbols[base] || 'E'}{' '}
+        </p>
+        {selection[id] > 0 && pathname === '/basket' && <p className="product__total_price" >{((price * selection[id]) * (rates[base] || 1)).toFixed(2)} {symbols[base] || 'E'}{' '}</p>}
       </div>
 
-      <div className="flex p-10 justify-between">
-        {' '}
+      <div className="flex p-10 justify-between px-6 py-4">
         <button
           type="button"
+          className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
           onClick={() => {
             dispatch(removeSelection(id))
           }}
         >
           -
               </button>
-        <div>{selection[id] || 0}</div>
-        <button
+        <div className="product__amout" >{selection[id] || 0}</div>
+        {pathname !== '/basket' && <button
           type="button"
+          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
           onClick={() => {
             dispatch(addSelection(id))
           }}
         >
           +{' '}
-        </button>{' '}
+        </button>}
       </div>
     </div>
   )
