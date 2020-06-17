@@ -8,13 +8,16 @@ const SET_BASE = 'SET_BASE'
 const SORT_PRICE = 'SORT_PRICE'
 const SORT_NAME = 'SORT_NAME'
 const GET_LOGS = '@@GET_LOGS'
+const CLEAN_SELECTION = '@@CLEAN_SELECTION'
+const UPDATE_SEARCH = '@@UPDATE_SEARCH'
 
 const initialState = {
   list: [],
   selection: {},
   rates: {},
   sortProducts: '',
-  logs: []
+  logs: [],
+  search: ''
 }
 
 export default (state = initialState, action) => {
@@ -56,6 +59,10 @@ export default (state = initialState, action) => {
       return { ...state, sortProducts: action.sortProducts }
     case GET_LOGS:
       return { ...state, logs: action.logs }
+    case CLEAN_SELECTION:
+      return {...state, selection: action.selection}
+    case UPDATE_SEARCH:
+      return {...state, search: action.search}
     default:
       return state
   }
@@ -148,4 +155,12 @@ export function willSort(array, sort) {
 
 export function filterArray(array, type) {
   return array.filter(action => action.type === type)
+}
+
+export function cleanSELECTION(){
+  return {type: CLEAN_SELECTION, selection: {}}
+}
+
+export function updateSearch(search) {
+  return {type: UPDATE_SEARCH, search}
 }

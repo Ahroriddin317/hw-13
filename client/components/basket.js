@@ -1,9 +1,10 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { getBasketProducts, willSort } from '../redux/reducers/products'
+import { useSelector, useDispatch } from 'react-redux'
+import { getBasketProducts, willSort, cleanSELECTION } from '../redux/reducers/products'
 import Card from './card'
 
 const Basket = () => {
+  const dispatch = useDispatch()
   const list = useSelector(s => s.products.list)
   const selection = useSelector((s) => s.products.selection)
   const sortProducts = useSelector(s => s.products.sortProducts)
@@ -21,8 +22,11 @@ const Basket = () => {
           )
         })}
       </div>
-      <div className="flex flex-wrap content-center justify-center">
-        <p id='total-amount'>{`total amount: ${numberOfItems}`}</p>
+      <div className="flex flex-wrap content-center justify-center items-center my-2">
+        <p id='total-amount' className="mr-8 text-2xl font-semibold text-gray-600">{`total amount: ${numberOfItems}`}</p>
+        <button type="button" className="bg-indigo-500 px-4 py-2 text-white  rounded-lg shadow-lg uppercase tracking-wider font-semibold" onClick={() => dispatch(cleanSELECTION())}>
+          clean basket
+        </button>
       </div>
     </div>
   )
